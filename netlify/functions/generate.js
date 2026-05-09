@@ -45,7 +45,7 @@ Antworte NUR mit JSON-Array. Null Markdown, null Text davor/danach.
       },
       body: JSON.stringify({
         model: "claude-sonnet-4-20250514",
-        max_tokens: 4000,
+        max_tokens: 2000,
         system: systemPrompt,
         messages: [{ role: "user", content: "Generiere jetzt die 5 Tool-Ideen als JSON." }],
       }),
