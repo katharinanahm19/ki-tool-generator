@@ -12,28 +12,7 @@ exports.handler = async (event) => {
     return { statusCode: 400, body: "Ungültige Anfrage." };
   }
 
-  const systemPrompt = `Du bist Tool-Strategin für Online-Unternehmerinnen (Coaches, Beraterinnen, Kursanbieterinnen).
-
-Erstelle 5 konkrete KI-Tool-Ideen für:
-- Nische: ${nische}
-- Hauptangebot: ${angebot}
-
-REGELN:
-- Kein SaaS. Nur Tools die als Claude Artifact (HTML/React) umsetzbar sind: Generatoren, Rechner, Analyse-Tools, Checklisten, Quizze, Chatbots, Planer, Scorer
-- Die 5 Tools MÜSSEN divers sein: verschiedene Tool-Typen UND verschiedene Funnel-Positionen
-- Realistisch ohne Programmierkenntnisse baubar
-- Kein Tool darf doppelt sein
-
-Felder pro Tool:
-1. name: Kreativer Name (deutsch, max 4 Wörter)
-2. beschreibung: Was das Tool macht (2-3 Sätze, konkret)
-3. toolTyp: z.B. "Interaktiver Rechner", "KI-Generator", "Quiz", "Analyse-Tool", "Chatbot", "Checkliste", "Planer", "Scorer"
-4. funnelPosition: Genau eine: "Lead-Magnet" | "Kurs-Bonus" | "Launch-Tool" | "Onboarding" | "Community-Tool"
-5. wasEsTut: Eine Zeile Format: "Gibt ein: [X] – bekommt raus: [Y]"
-6. claudePrompt: Fertiger Claude-Prompt zum Bauen als Artifact. Deutsch. Ohne Farben. Nische und Angebot eingebettet. Vollständig – nichts muss ergänzt werden. Mindestens 5 Sätze.
-
-Antworte NUR mit JSON-Array. Null Markdown, null Text davor/danach.
-[{"name":"","beschreibung":"","toolTyp":"","funnelPosition":"","wasEsTut":"","claudePrompt":""}]`;
+  const systemPrompt = `Tool-Strategin für Online-Unternehmerinnen. Erstelle 5 KI-Tool-Ideen für Nische: "${nische}", Angebot: "${angebot}". Nur Claude Artifacts (Generator, Quiz, Rechner, Chatbot, Checkliste). Divers. Kein SaaS. NUR JSON zurückgeben, kein Text davor/danach.`;
 
   try {
     const response = await fetch("https://api.anthropic.com/v1/messages", {
@@ -45,9 +24,9 @@ Antworte NUR mit JSON-Array. Null Markdown, null Text davor/danach.
       },
       body: JSON.stringify({
         model: "claude-sonnet-4-20250514",
-        max_tokens: 2000,
+        max_tokens: 1500,
         system: systemPrompt,
-        messages: [{ role: "user", content: "Generiere jetzt die 5 Tool-Ideen als JSON." }],
+        messages: [{ role: "user", content: `Generiere 5 Tool-Ideen als JSON-Array. Felder: name (max 4 Wörter), beschreibung (2 Sätze), toolTyp, funnelPosition (Lead-Magnet/Kurs-Bonus/Launch-Tool/Onboarding/Community-Tool), wasEsTut (Gibt ein: X – bekommt raus: Y), claudePrompt (3 Sätze Bauanleitung, Deutsch, ohne Farben). Format: [{"name":"","beschreibung":"","toolTyp":"","funnelPosition":"","wasEsTut":"","claudePrompt":""}]` }],
       }),
     });
 
