@@ -35,7 +35,7 @@ exports.handler = async (event) => {
         "anthropic-version": "2023-06-01",
       },
       body: JSON.stringify({
-        model: "claude-sonnet-4-20250514",
+        model: "claude-haiku-4-5-20251001",
         max_tokens: 1500,
         system: systemPrompt,
         messages: [{ role: "user", content: `Generiere 5 Tool-Ideen als JSON-Array. Felder: name (max 4 Wörter), beschreibung (2 Sätze), toolTyp, funnelPosition (Lead-Magnet/Kurs-Bonus/Launch-Tool/Onboarding/Community-Tool), wasEsTut (Gibt ein: X – bekommt raus: Y), claudePrompt (3 Sätze Bauanleitung, Deutsch, ohne Farben). Format: [{"name":"","beschreibung":"","toolTyp":"","funnelPosition":"","wasEsTut":"","claudePrompt":""}]` }],
