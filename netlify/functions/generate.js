@@ -38,7 +38,7 @@ exports.handler = async (event) => {
         model: "claude-haiku-4-5-20251001",
         max_tokens: 1500,
         system: systemPrompt,
-        messages: [{ role: "user", content: `Generiere 5 Tool-Ideen als JSON-Array. Felder: name (max 4 Wörter), beschreibung (2 Sätze), toolTyp, funnelPosition (Lead-Magnet/Kurs-Bonus/Launch-Tool/Onboarding/Community-Tool), wasEsTut (Gibt ein: X – bekommt raus: Y), claudePrompt (3 Sätze Bauanleitung, Deutsch, ohne Farben). Format: [{"name":"","beschreibung":"","toolTyp":"","funnelPosition":"","wasEsTut":"","claudePrompt":""}]` }],
+        messages: [{ role: "user", content: `Generiere 5 Tool-Ideen als JSON-Array. Felder: name (max 4 Wörter), beschreibung (2 Sätze), toolTyp, funnelPosition (Lead-Magnet/Kurs-Bonus/Launch-Tool/Onboarding/Community-Tool), wasEsTut (Gibt ein: X – bekommt raus: Y), claudePrompt (3 Sätze, Deutsch, ohne Farben, MUSS mit "Erstelle ein interaktives React Artifact" beginnen). Format: [{"name":"","beschreibung":"","toolTyp":"","funnelPosition":"","wasEsTut":"","claudePrompt":""}]` }],
       }),
     });
 
