@@ -36,9 +36,9 @@ exports.handler = async (event) => {
       },
       body: JSON.stringify({
         model: "claude-haiku-4-5-20251001",
-        max_tokens: 800,
+        max_tokens: 1500,
         system: systemPrompt,
-        messages: [{ role: "user", content: 'Generiere 5 Tool-Ideen als JSON-Array. Felder: name (max 4 Wörter), beschreibung (2 Sätze), toolTyp, funnelPosition (Lead-Magnet/Kurs-Bonus/Launch-Tool/Onboarding/Community-Tool), wasEsTut (Gibt ein: X - bekommt raus: Y). Format: [{"name":"","beschreibung":"","toolTyp":"","funnelPosition":"","wasEsTut":""}]' }],
+        messages: [{ role: "user", content: "Generiere 5 Tool-Ideen als JSON-Array. Felder: name (max 4 Woerter), beschreibung (2 Saetze), toolTyp, funnelPosition (Lead-Magnet/Kurs-Bonus/Launch-Tool/Onboarding/Community-Tool), wasEsTut (Gibt ein: X - bekommt raus: Y), claudePrompt (3 Saetze Bauanleitung als React Artifact, Deutsch, ohne Farben, beginnt mit: Erstelle ein interaktives React Artifact). Format: [{\"name\":\"\",\"beschreibung\":\"\",\"toolTyp\":\"\",\"funnelPosition\":\"\",\"wasEsTut\":\"\",\"claudePrompt\":\"\"}]" }],
       }),
     });
 
