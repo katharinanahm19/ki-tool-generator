@@ -12,15 +12,15 @@ exports.handler = async (event) => {
     return { statusCode: 400, body: "Ungültige Anfrage." };
   }
 
-  const systemPrompt = `Tool-Strategin für Online-Unternehmerinnen. Erstelle 5 KI-Tool-Ideen für Nische: "${nische}", Angebot: "${angebot}". Nur Claude Artifacts (Generator, Quiz, Rechner, Chatbot, Checkliste). Divers. Kein SaaS. NUR JSON zurückgeben, kein Text davor/danach.`;
-
   if (!process.env.ANTHROPIC_API_KEY) {
     return {
       statusCode: 500,
       headers: { "Content-Type": "application/json", "Access-Control-Allow-Origin": "*" },
-      body: JSON.stringify({ error: "API Key fehlt in Netlify Environment Variables" }),
+      body: JSON.stringify({ error: "API Key fehlt" }),
     };
   }
+
+  const systemPrompt = `Tool-Strategin für Online-Unternehmerinnen. Erstelle 5 KI-Tool-Ideen für Nische: "${nische}", Angebot: "${angebot}". Nur Claude Artifacts (Generator, Quiz, Rechner, Chatbot, Checkliste). Divers. Kein SaaS. NUR JSON zurückgeben, kein Text davor/danach.`;
 
   try {
     const controller = new AbortController();
@@ -36,21 +36,18 @@ exports.handler = async (event) => {
       },
       body: JSON.stringify({
         model: "claude-haiku-4-5-20251001",
-        max_tokens: 1500,
+        max_tokens: 800,
         system: systemPrompt,
-        messages: [{ role: "user", content: `Generiere 5 Tool-Ideen als JSON-Array. Felder: name (max 4 Wörter), beschreibung (2 Sätze), toolTyp, funnelPosition (Lead-Magnet/Kurs-Bonus/Launch-Tool/Onboarding/Community-Tool), wasEsTut (Gibt ein: X – bekommt raus: Y), claudePrompt (3 Sätze, Deutsch, ohne Farben, MUSS mit "Erstelle ein interaktives React Artifact" beginnen). Format: [{"name":"","beschreibung":"","toolTyp":"","funnelPosition":"","wasEsTut":"","claudePrompt":""}]` }],
+        messages: [{ role: "user", content: 'Generiere 5 Tool-Ideen als JSON-Array. Felder: name (max 4 Wörter), beschreibung (2 Sätze), toolTyp, funnelPosition (Lead-Magnet/Kurs-Bonus/Launch-Tool/Onboarding/Community-Tool), wasEsTut (Gibt ein: X - bekommt raus: Y). Format: [{"name":"","beschreibung":"","toolTyp":"","funnelPosition":"","wasEsTut":""}]' }],
       }),
     });
 
-    const data = await response.json();
     clearTimeout(timeout);
+    const data = await response.json();
 
     return {
       statusCode: 200,
-      headers: {
-        "Content-Type": "application/json",
-        "Access-Control-Allow-Origin": "*",
-      },
+      headers: { "Content-Type": "application/json", "Access-Control-Allow-Origin": "*" },
       body: JSON.stringify(data),
     };
   } catch (err) {
