@@ -14,9 +14,21 @@ exports.handler = async (event) => {
 
   const systemPrompt = `Tool-Strategin für Online-Unternehmerinnen. Erstelle 5 KI-Tool-Ideen für Nische: "${nische}", Angebot: "${angebot}". Nur Claude Artifacts (Generator, Quiz, Rechner, Chatbot, Checkliste). Divers. Kein SaaS. NUR JSON zurückgeben, kein Text davor/danach.`;
 
+  if (!process.env.ANTHROPIC_API_KEY) {
+    return {
+      statusCode: 500,
+      headers: { "Content-Type": "application/json", "Access-Control-Allow-Origin": "*" },
+      body: JSON.stringify({ error: "API Key fehlt in Netlify Environment Variables" }),
+    };
+  }
+
   try {
+    const controller = new AbortController();
+    const timeout = setTimeout(() => controller.abort(), 20000);
+
     const response = await fetch("https://api.anthropic.com/v1/messages", {
       method: "POST",
+      signal: controller.signal,
       headers: {
         "Content-Type": "application/json",
         "x-api-key": process.env.ANTHROPIC_API_KEY,
@@ -31,6 +43,7 @@ exports.handler = async (event) => {
     });
 
     const data = await response.json();
+    clearTimeout(timeout);
 
     return {
       statusCode: 200,
