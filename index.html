@@ -253,3 +253,109 @@
   </script>
 </body>
 </html>
+    };
+    const LOAD_MSGS = ["Markttrends werden analysiert...", "Tool-Ideen werden entwickelt...", "Ergebnisse werden aufbereitet...", "Fast fertig..."];
+    let loadInterval;
+
+    async function generate() {
+      const nische  = document.getElementById("nische").value.trim();
+      const angebot = document.getElementById("angebot").value.trim();
+      const errorEl = document.getElementById("errorMsg");
+      if (!nische || !angebot) { errorEl.textContent = "Bitte beide Felder ausfüllen."; return; }
+      errorEl.textContent = "";
+
+      document.getElementById("inputSection").style.display  = "none";
+      document.getElementById("loadingSection").style.display = "block";
+      document.getElementById("resultsSection").style.display = "none";
+
+      let msgIdx = 0;
+      loadInterval = setInterval(() => {
+        msgIdx = Math.min(msgIdx + 1, LOAD_MSGS.length - 1);
+        document.getElementById("loadText").textContent = LOAD_MSGS[msgIdx];
+      }, 2000);
+
+      try {
+        const res = await fetch("/.netlify/functions/generate", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ nische, angebot }),
+        });
+        const data = await res.json();
+        const text = data.content.map(i => i.text || "").join("");
+        const clean = text.replace(/```json|```/g, "").trim();
+        const tools = JSON.parse(clean);
+        renderResults(nische, tools);
+      } catch (e) {
+        clearInterval(loadInterval);
+        document.getElementById("loadingSection").style.display = "none";
+        document.getElementById("inputSection").style.display  = "block";
+        document.getElementById("errorMsg").textContent = "Fehler beim Generieren. Bitte nochmal versuchen.";
+      }
+    }
+
+    function renderResults(nische, tools) {
+      clearInterval(loadInterval);
+      document.getElementById("loadingSection").style.display = "none";
+      document.getElementById("resultsSection").style.display = "block";
+      document.getElementById("resultTitle").textContent = '"' + nische + '"';
+      const container = document.getElementById("toolCards");
+      container.innerHTML = "";
+
+      tools.forEach((tool, i) => {
+        const fp = FUNNEL_META[tool.funnelPosition] || { color: "#888", bg: "#f0f0f0", icon: "📌" };
+        const card = document.createElement("div");
+        card.className = "tool-card";
+        card.innerHTML = `
+          <div class="tool-top">
+            <div class="tool-row">
+              <div class="num">${i + 1}</div>
+              <div style="flex:1">
+                <div class="tool-name">${tool.name}</div>
+                <div class="tag-row">
+                  <span class="tag" style="background:${fp.bg};color:${fp.color}">${fp.icon} ${tool.funnelPosition}</span>
+                  <span class="tag" style="background:#f0f0f0;color:#666">${tool.toolTyp}</span>
+                </div>
+              </div>
+            </div>
+            <p class="tool-desc">${tool.beschreibung}</p>
+          </div>
+          <div class="was-box"><strong>↳</strong> ${tool.wasEsTut}</div>
+          <button class="prompt-toggle" onclick="togglePrompt(this)">
+            <span>▼</span> Fertigen Prompt anzeigen
+          </button>
+          <div class="prompt-box">
+            <div class="prompt-label">Diesen Prompt bei Claude eingeben:</div>
+            <div class="prompt-text">${tool.claudePrompt}</div>
+            <button class="btn-copy" onclick="copyPrompt(this, \`${(tool.claudePrompt||'').replace(/`/g,'\\`')}\`)">Prompt kopieren</button>
+          </div>
+        `;
+        container.appendChild(card);
+      });
+    }
+
+    function togglePrompt(btn) {
+      const box = btn.nextElementSibling;
+      const isOpen = box.classList.contains("open");
+      box.classList.toggle("open");
+      btn.innerHTML = isOpen ? "<span>▼</span> Fertigen Prompt anzeigen" : "<span>▲</span> Prompt schließen";
+    }
+
+    function copyPrompt(btn, text) {
+      navigator.clipboard.writeText(text);
+      btn.textContent = "✓ Kopiert!";
+      btn.classList.add("copied");
+      setTimeout(() => { btn.textContent = "Prompt kopieren"; btn.classList.remove("copied"); }, 2000);
+    }
+
+    function reset() {
+      document.getElementById("resultsSection").style.display = "none";
+      document.getElementById("inputSection").style.display  = "block";
+      document.getElementById("toolCards").innerHTML = "";
+    }
+
+    document.addEventListener("keydown", e => {
+      if (e.key === "Enter" && document.getElementById("inputSection").style.display !== "none") generate();
+    });
+  </script>
+</body>
+</html>
