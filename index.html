@@ -8,13 +8,11 @@
   <style>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
     body { font-family: 'Montserrat', sans-serif; background: #fef4ee; min-height: 100vh; padding-bottom: 60px; }
-
     .hero { background: linear-gradient(135deg, #1a4535 0%, #2d6b52 100%); padding: 48px 24px 44px; text-align: center; }
     .badge { display: inline-block; background: rgba(255,255,255,0.15); border-radius: 20px; padding: 4px 16px; font-size: 11px; letter-spacing: 2px; text-transform: uppercase; color: #e5cfd3; margin-bottom: 20px; }
     .hero h1 { font-size: clamp(26px, 5vw, 42px); font-weight: 800; color: #fef4ee; line-height: 1.2; margin-bottom: 14px; }
     .hero h1 span { color: #bd8892; }
     .hero p { font-size: 15px; color: rgba(254,244,238,0.8); max-width: 420px; margin: 0 auto; line-height: 1.6; }
-
     .card { background: #fff; border-radius: 16px; padding: 32px; max-width: 600px; margin: 32px auto 0; box-shadow: 0 4px 32px rgba(26,69,53,0.10); }
     label { display: block; font-size: 11px; font-weight: 700; letter-spacing: 1.5px; text-transform: uppercase; color: #1a4535; margin-bottom: 8px; }
     input[type="text"] { width: 100%; padding: 13px 16px; border: 2px solid #e5cfd3; border-radius: 10px; font-size: 15px; font-family: 'Montserrat', sans-serif; outline: none; background: #fef4ee; color: #1a4535; transition: border-color 0.2s; margin-bottom: 20px; }
@@ -22,23 +20,17 @@
     .error-msg { color: #c0392b; font-size: 13px; margin-top: 10px; }
     .btn-main { width: 100%; padding: 15px; background: #4e9c61; color: #fff; border: none; border-radius: 10px; font-size: 16px; font-weight: 700; cursor: pointer; margin-top: 24px; font-family: 'Montserrat', sans-serif; transition: background 0.2s; }
     .btn-main:hover { background: #3d8a50; }
-
     .loading { text-align: center; padding: 80px 24px; display: none; }
     .spinner { width: 48px; height: 48px; border: 4px solid #e5cfd3; border-top: 4px solid #1a4535; border-radius: 50%; animation: spin 0.9s linear infinite; margin: 0 auto 24px; }
     .loading p { font-size: 15px; color: #1a4535; font-weight: 600; }
     @keyframes spin { to { transform: rotate(360deg); } }
-
     .results { max-width: 680px; margin: 0 auto; padding: 0 16px; display: none; }
     .results-header { text-align: center; padding: 36px 0 24px; }
     .results-header p { font-size: 14px; color: #bd8892; margin-bottom: 6px; }
     .results-header h2 { font-size: 22px; font-weight: 800; color: #1a4535; }
-
     .tool-card { background: #fff; border-radius: 16px; margin-bottom: 20px; overflow: hidden; box-shadow: 0 2px 20px rgba(26,69,53,0.08); border: 1px solid #e5cfd3; animation: fadeUp 0.4s ease both; }
     @keyframes fadeUp { from { opacity: 0; transform: translateY(16px); } to { opacity: 1; transform: translateY(0); } }
-    .tool-card:nth-child(1) { animation-delay: 0.05s } .tool-card:nth-child(2) { animation-delay: 0.12s }
-    .tool-card:nth-child(3) { animation-delay: 0.19s } .tool-card:nth-child(4) { animation-delay: 0.26s }
-    .tool-card:nth-child(5) { animation-delay: 0.33s }
-
+    .tool-card:nth-child(1){animation-delay:0.05s}.tool-card:nth-child(2){animation-delay:0.12s}.tool-card:nth-child(3){animation-delay:0.19s}.tool-card:nth-child(4){animation-delay:0.26s}.tool-card:nth-child(5){animation-delay:0.33s}
     .tool-top { padding: 20px 24px 16px; }
     .tool-row { display: flex; align-items: flex-start; gap: 14px; }
     .num { width: 32px; height: 32px; border-radius: 8px; background: #1a4535; color: #fef4ee; display: flex; align-items: center; justify-content: center; font-size: 14px; font-weight: 700; flex-shrink: 0; }
@@ -47,315 +39,187 @@
     .tag { font-size: 11px; font-weight: 600; padding: 3px 10px; border-radius: 20px; }
     .tool-desc { font-size: 14px; color: #555; line-height: 1.6; margin-top: 14px; }
     .was-box { background: #fef4ee; border-top: 1px solid #e5cfd3; padding: 12px 24px; font-size: 13px; color: #1a4535; }
-
     .prompt-toggle { display: flex; align-items: center; gap: 8px; width: 100%; padding: 14px 24px; background: transparent; border: none; border-top: 1px solid #e5cfd3; cursor: pointer; font-size: 13px; font-weight: 700; color: #bd8892; font-family: 'Montserrat', sans-serif; text-align: left; transition: background 0.15s; }
     .prompt-toggle:hover { background: #fef4ee; }
-    .prompt-toggle:disabled { opacity: 0.6; cursor: not-allowed; }
-
     .prompt-box { background: #f8f4f0; border-top: 1px solid #e5cfd3; padding: 20px 24px; display: none; }
     .prompt-box.open { display: block; }
     .prompt-label { font-size: 11px; font-weight: 700; color: #bd8892; letter-spacing: 1.5px; text-transform: uppercase; margin-bottom: 10px; }
-    .prompt-spinner { display: flex; align-items: center; gap: 10px; font-size: 13px; color: #1a4535; font-weight: 600; margin-bottom: 8px; }
-    .prompt-spinner .mini-spinner { width: 16px; height: 16px; border: 2px solid #e5cfd3; border-top: 2px solid #1a4535; border-radius: 50%; animation: spin 0.9s linear infinite; flex-shrink: 0; }
     .prompt-text { font-size: 13px; color: #333; line-height: 1.7; white-space: pre-wrap; font-family: 'Montserrat', sans-serif; margin-bottom: 14px; }
     .btn-copy { padding: 9px 18px; background: #1a4535; color: #fff; border: none; border-radius: 8px; font-size: 13px; font-weight: 700; cursor: pointer; font-family: 'Montserrat', sans-serif; transition: background 0.2s; }
     .btn-copy:hover { background: #2d6b52; }
     .btn-copy.copied { background: #4e9c61; }
-
     .btn-reset { display: block; margin: 8px auto 0; padding: 12px 28px; background: transparent; color: #1a4535; border: 2px solid #1a4535; border-radius: 10px; font-size: 14px; font-weight: 700; cursor: pointer; font-family: 'Montserrat', sans-serif; transition: all 0.2s; }
     .btn-reset:hover { background: #1a4535; color: #fef4ee; }
   </style>
 </head>
 <body>
 
-  <div class="hero">
-    <div class="badge">✦ KI-Tool-Generator</div>
-    <h1>Welches Tool kannst du<br><span>für deine Kunden bauen?</span></h1>
-    <p>Gib deine Nische ein – erhalte 5 konkrete Tool-Ideen mit fertigem Claude-Prompt zum Bauen.</p>
-  </div>
+<div class="hero">
+  <div class="badge">✦ KI-Tool-Generator</div>
+  <h1>Welches Tool kannst du<br><span>für deine Kunden bauen?</span></h1>
+  <p>Gib deine Nische ein – erhalte 5 konkrete Tool-Ideen mit fertigem Claude-Prompt zum Bauen.</p>
+</div>
 
-  <div class="card" id="inputSection">
-    <label for="nische">Deine Nische oder Branche</label>
-    <input type="text" id="nische" placeholder="z.B. Online-Marketing für Coaches" />
-    <label for="angebot">Dein Hauptangebot</label>
-    <input type="text" id="angebot" placeholder="z.B. 12-Monats-Programm zum Launch-System aufbauen" />
-    <div class="error-msg" id="errorMsg"></div>
-    <button class="btn-main" onclick="generate()">5 Tool-Ideen generieren →</button>
-  </div>
+<div class="card" id="inputSection">
+  <label for="nische">Deine Nische oder Branche</label>
+  <input type="text" id="nische" placeholder="z.B. Online-Marketing für Coaches" />
+  <label for="angebot">Dein Hauptangebot</label>
+  <input type="text" id="angebot" placeholder="z.B. 12-Monats-Programm zum Launch-System aufbauen" />
+  <div class="error-msg" id="errorMsg"></div>
+  <button class="btn-main" id="generateBtn" onclick="generate()">5 Tool-Ideen generieren &rarr;</button>
+</div>
 
-  <div class="loading" id="loadingSection">
-    <div class="spinner"></div>
-    <p id="loadText">Markttrends werden analysiert...</p>
-  </div>
+<div class="loading" id="loadingSection">
+  <div class="spinner"></div>
+  <p id="loadText">Markttrends werden analysiert...</p>
+</div>
 
-  <div class="results" id="resultsSection">
-    <div class="results-header">
-      <p>5 Tool-Ideen für</p>
-      <h2 id="resultTitle"></h2>
-    </div>
-    <div id="toolCards"></div>
-    <button class="btn-reset" onclick="reset()">← Neue Eingabe</button>
+<div class="results" id="resultsSection">
+  <div class="results-header">
+    <p>5 Tool-Ideen f&uuml;r</p>
+    <h2 id="resultTitle"></h2>
   </div>
+  <div id="toolCards"></div>
+  <button class="btn-reset" onclick="reset()">&larr; Neue Eingabe</button>
+</div>
 
-  <script>
-    const FUNNEL_META = {
-      "Lead-Magnet":    { color: "#4e9c61", bg: "#e8f5ec", icon: "🎯" },
-      "Kurs-Bonus":     { color: "#bd8892", bg: "#f5eced", icon: "🎁" },
-      "Launch-Tool":    { color: "#1a4535", bg: "#e0ebe6", icon: "🚀" },
-      "Onboarding":     { color: "#7b6ea0", bg: "#eeeaf5", icon: "🤝" },
-      "Community-Tool": { color: "#c4883a", bg: "#f5eddf", icon: "💬" },
+<script>
+var FUNNEL_META = {
+  "Lead-Magnet":    { color: "#4e9c61", bg: "#e8f5ec", icon: "🎯" },
+  "Kurs-Bonus":     { color: "#bd8892", bg: "#f5eced", icon: "🎁" },
+  "Launch-Tool":    { color: "#1a4535", bg: "#e0ebe6", icon: "🚀" },
+  "Onboarding":     { color: "#7b6ea0", bg: "#eeeaf5", icon: "🤝" },
+  "Community-Tool": { color: "#c4883a", bg: "#f5eddf", icon: "💬" }
+};
+var LOAD_MSGS = ["Markttrends werden analysiert...", "Tool-Ideen werden entwickelt...", "Ergebnisse werden aufbereitet...", "Fast fertig..."];
+var loadInterval;
+
+function generate() {
+  var nische  = document.getElementById("nische").value.trim();
+  var angebot = document.getElementById("angebot").value.trim();
+  var errorEl = document.getElementById("errorMsg");
+  if (!nische || !angebot) { errorEl.textContent = "Bitte beide Felder ausf\u00fcllen."; return; }
+  errorEl.textContent = "";
+
+  document.getElementById("inputSection").style.display   = "none";
+  document.getElementById("loadingSection").style.display = "block";
+  document.getElementById("resultsSection").style.display = "none";
+
+  var msgIdx = 0;
+  loadInterval = setInterval(function() {
+    msgIdx = Math.min(msgIdx + 1, LOAD_MSGS.length - 1);
+    document.getElementById("loadText").textContent = LOAD_MSGS[msgIdx];
+  }, 2000);
+
+  fetch("/.netlify/functions/generate", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ nische: nische, angebot: angebot })
+  })
+  .then(function(res) { return res.json(); })
+  .then(function(data) {
+    var text  = data.content.map(function(i) { return i.text || ""; }).join("");
+    var clean = text.replace(/```json|```/g, "").trim();
+    var tools = JSON.parse(clean);
+    renderResults(nische, tools);
+  })
+  .catch(function() {
+    clearInterval(loadInterval);
+    document.getElementById("loadingSection").style.display = "none";
+    document.getElementById("inputSection").style.display   = "block";
+    document.getElementById("errorMsg").textContent = "Fehler beim Generieren. Bitte nochmal versuchen.";
+  });
+}
+
+function renderResults(nische, tools) {
+  clearInterval(loadInterval);
+  document.getElementById("loadingSection").style.display = "none";
+  document.getElementById("resultsSection").style.display = "block";
+  document.getElementById("resultTitle").textContent = '"' + nische + '"';
+  var container = document.getElementById("toolCards");
+  container.innerHTML = "";
+
+  tools.forEach(function(tool, i) {
+    var fp   = FUNNEL_META[tool.funnelPosition] || { color: "#888", bg: "#f0f0f0", icon: "📌" };
+    var card = document.createElement("div");
+    card.className = "tool-card";
+
+    var top = document.createElement("div");
+    top.className = "tool-top";
+    top.innerHTML =
+      '<div class="tool-row">' +
+        '<div class="num">' + (i+1) + '</div>' +
+        '<div style="flex:1">' +
+          '<div class="tool-name">' + esc(tool.name) + '</div>' +
+          '<div class="tag-row">' +
+            '<span class="tag" style="background:' + fp.bg + ';color:' + fp.color + '">' + fp.icon + ' ' + esc(tool.funnelPosition) + '</span>' +
+            '<span class="tag" style="background:#f0f0f0;color:#666">' + esc(tool.toolTyp) + '</span>' +
+          '</div>' +
+        '</div>' +
+      '</div>' +
+      '<p class="tool-desc">' + esc(tool.beschreibung) + '</p>';
+
+    var was = document.createElement("div");
+    was.className = "was-box";
+    was.innerHTML = "<strong>&darr;</strong> " + esc(tool.wasEsTut);
+
+    var toggle = document.createElement("button");
+    toggle.className = "prompt-toggle";
+    toggle.innerHTML = "<span>&#9660;</span> Fertigen Prompt anzeigen";
+    toggle.onclick = function() { togglePrompt(toggle, box); };
+
+    var box = document.createElement("div");
+    box.className = "prompt-box";
+
+    var lbl = document.createElement("div");
+    lbl.className = "prompt-label";
+    lbl.textContent = "Diesen Prompt bei Claude eingeben:";
+
+    var txt = document.createElement("div");
+    txt.className = "prompt-text";
+    txt.textContent = tool.claudePrompt || "";
+
+    var copyBtn = document.createElement("button");
+    copyBtn.className = "btn-copy";
+    copyBtn.textContent = "Prompt kopieren";
+    copyBtn.onclick = function() {
+      navigator.clipboard.writeText(tool.claudePrompt || "");
+      copyBtn.textContent = "\u2713 Kopiert!";
+      copyBtn.classList.add("copied");
+      setTimeout(function() { copyBtn.textContent = "Prompt kopieren"; copyBtn.classList.remove("copied"); }, 2000);
     };
-    const LOAD_MSGS = ["Markttrends werden analysiert...", "Tool-Ideen werden entwickelt...", "Ergebnisse werden aufbereitet...", "Fast fertig..."];
-    let loadInterval;
-    let currentNische = "";
-    let currentAngebot = "";
 
-    async function generate() {
-      const nische  = document.getElementById("nische").value.trim();
-      const angebot = document.getElementById("angebot").value.trim();
-      const errorEl = document.getElementById("errorMsg");
-      if (!nische || !angebot) { errorEl.textContent = "Bitte beide Felder ausfüllen."; return; }
-      errorEl.textContent = "";
-      currentNische = nische;
-      currentAngebot = angebot;
+    box.appendChild(lbl);
+    box.appendChild(txt);
+    box.appendChild(copyBtn);
+    card.appendChild(top);
+    card.appendChild(was);
+    card.appendChild(toggle);
+    card.appendChild(box);
+    container.appendChild(card);
+  });
+}
 
-      document.getElementById("inputSection").style.display  = "none";
-      document.getElementById("loadingSection").style.display = "block";
-      document.getElementById("resultsSection").style.display = "none";
+function togglePrompt(btn, box) {
+  var isOpen = box.classList.contains("open");
+  box.classList.toggle("open");
+  btn.innerHTML = isOpen ? "<span>&#9660;</span> Fertigen Prompt anzeigen" : "<span>&#9650;</span> Prompt schlie&szlig;en";
+}
 
-      let msgIdx = 0;
-      loadInterval = setInterval(() => {
-        msgIdx = Math.min(msgIdx + 1, LOAD_MSGS.length - 1);
-        document.getElementById("loadText").textContent = LOAD_MSGS[msgIdx];
-      }, 2000);
+function esc(str) {
+  if (!str) return "";
+  return String(str).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/"/g,"&quot;");
+}
 
-      try {
-        const res = await fetch("/.netlify/functions/generate", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ nische, angebot }),
-        });
-        const data = await res.json();
-        const text = data.content.map(i => i.text || "").join("");
-        const clean = text.replace(/```json|```/g, "").trim();
-        const tools = JSON.parse(clean);
-        renderResults(nische, tools);
-      } catch (e) {
-        clearInterval(loadInterval);
-        document.getElementById("loadingSection").style.display = "none";
-        document.getElementById("inputSection").style.display  = "block";
-        document.getElementById("errorMsg").textContent = "Fehler beim Generieren. Bitte nochmal versuchen.";
-      }
-    }
+function reset() {
+  document.getElementById("resultsSection").style.display = "none";
+  document.getElementById("inputSection").style.display   = "block";
+  document.getElementById("toolCards").innerHTML = "";
+}
 
-    function renderResults(nische, tools) {
-      clearInterval(loadInterval);
-      document.getElementById("loadingSection").style.display = "none";
-      document.getElementById("resultsSection").style.display = "block";
-      document.getElementById("resultTitle").textContent = '"' + nische + '"';
-      const container = document.getElementById("toolCards");
-      container.innerHTML = "";
-
-      tools.forEach((tool, i) => {
-        const fp = FUNNEL_META[tool.funnelPosition] || { color: "#888", bg: "#f0f0f0", icon: "📌" };
-        const card = document.createElement("div");
-        card.className = "tool-card";
-        card.innerHTML = `
-          <div class="tool-top">
-            <div class="tool-row">
-              <div class="num">${i + 1}</div>
-              <div style="flex:1">
-                <div class="tool-name">${tool.name}</div>
-                <div class="tag-row">
-                  <span class="tag" style="background:${fp.bg};color:${fp.color}">${fp.icon} ${tool.funnelPosition}</span>
-                  <span class="tag" style="background:#f0f0f0;color:#666">${tool.toolTyp}</span>
-                </div>
-              </div>
-            </div>
-            <p class="tool-desc">${tool.beschreibung}</p>
-          </div>
-          <div class="was-box"><strong>↳</strong> ${tool.wasEsTut}</div>
-          <button class="prompt-toggle" onclick="togglePrompt(this, ${i})" data-tool='${JSON.stringify(tool).replace(/'/g, "&#39;")}'>
-            <span>✦</span> Claude-Prompt generieren
-          </button>
-          <div class="prompt-box" id="promptBox-${i}">
-            <div class="prompt-label">Diesen Prompt bei Claude eingeben:</div>
-            <div class="prompt-text" id="promptText-${i}"></div>
-            <button class="btn-copy" id="copyBtn-${i}" onclick="copyPrompt(${i})" style="display:none">Prompt kopieren</button>
-          </div>
-        `;
-        container.appendChild(card);
-      });
-    }
-
-    async function togglePrompt(btn, idx) {
-      const box = document.getElementById("promptBox-" + idx);
-      const isOpen = box.classList.contains("open");
-
-      if (isOpen) {
-        box.classList.remove("open");
-        btn.innerHTML = "<span>✦</span> Claude-Prompt generieren";
-        return;
-      }
-
-      // Already loaded
-      const textEl = document.getElementById("promptText-" + idx);
-      if (textEl.textContent.trim()) {
-        box.classList.add("open");
-        btn.innerHTML = "<span>▲</span> Prompt schließen";
-        return;
-      }
-
-      // Load prompt
-      box.classList.add("open");
-      btn.disabled = true;
-      btn.innerHTML = "<span>⏳</span> Prompt wird generiert...";
-      textEl.innerHTML = '<div class="prompt-spinner"><div class="mini-spinner"></div> Sonnet schreibt den Prompt...</div>';
-
-      const tool = JSON.parse(btn.getAttribute("data-tool"));
-
-      try {
-        const res = await fetch("/.netlify/functions/prompt", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ tool, nische: currentNische, angebot: currentAngebot }),
-        });
-        const data = await res.json();
-        textEl.textContent = data.prompt || "Fehler beim Laden.";
-        document.getElementById("copyBtn-" + idx).style.display = "inline-block";
-        btn.innerHTML = "<span>▲</span> Prompt schließen";
-      } catch (e) {
-        textEl.textContent = "Fehler. Bitte nochmal versuchen.";
-        btn.innerHTML = "<span>✦</span> Claude-Prompt generieren";
-      } finally {
-        btn.disabled = false;
-      }
-    }
-
-    function copyPrompt(idx) {
-      const text = document.getElementById("promptText-" + idx).textContent;
-      navigator.clipboard.writeText(text);
-      const btn = document.getElementById("copyBtn-" + idx);
-      btn.textContent = "✓ Kopiert!";
-      btn.classList.add("copied");
-      setTimeout(() => { btn.textContent = "Prompt kopieren"; btn.classList.remove("copied"); }, 2000);
-    }
-
-    function reset() {
-      document.getElementById("resultsSection").style.display = "none";
-      document.getElementById("inputSection").style.display  = "block";
-      document.getElementById("toolCards").innerHTML = "";
-    }
-
-    document.addEventListener("keydown", e => {
-      if (e.key === "Enter" && document.getElementById("inputSection").style.display !== "none") generate();
-    });
-  </script>
-</body>
-</html>
-    };
-    const LOAD_MSGS = ["Markttrends werden analysiert...", "Tool-Ideen werden entwickelt...", "Ergebnisse werden aufbereitet...", "Fast fertig..."];
-    let loadInterval;
-
-    async function generate() {
-      const nische  = document.getElementById("nische").value.trim();
-      const angebot = document.getElementById("angebot").value.trim();
-      const errorEl = document.getElementById("errorMsg");
-      if (!nische || !angebot) { errorEl.textContent = "Bitte beide Felder ausfüllen."; return; }
-      errorEl.textContent = "";
-
-      document.getElementById("inputSection").style.display  = "none";
-      document.getElementById("loadingSection").style.display = "block";
-      document.getElementById("resultsSection").style.display = "none";
-
-      let msgIdx = 0;
-      loadInterval = setInterval(() => {
-        msgIdx = Math.min(msgIdx + 1, LOAD_MSGS.length - 1);
-        document.getElementById("loadText").textContent = LOAD_MSGS[msgIdx];
-      }, 2000);
-
-      try {
-        const res = await fetch("/.netlify/functions/generate", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ nische, angebot }),
-        });
-        const data = await res.json();
-        const text = data.content.map(i => i.text || "").join("");
-        const clean = text.replace(/```json|```/g, "").trim();
-        const tools = JSON.parse(clean);
-        renderResults(nische, tools);
-      } catch (e) {
-        clearInterval(loadInterval);
-        document.getElementById("loadingSection").style.display = "none";
-        document.getElementById("inputSection").style.display  = "block";
-        document.getElementById("errorMsg").textContent = "Fehler beim Generieren. Bitte nochmal versuchen.";
-      }
-    }
-
-    function renderResults(nische, tools) {
-      clearInterval(loadInterval);
-      document.getElementById("loadingSection").style.display = "none";
-      document.getElementById("resultsSection").style.display = "block";
-      document.getElementById("resultTitle").textContent = '"' + nische + '"';
-      const container = document.getElementById("toolCards");
-      container.innerHTML = "";
-
-      tools.forEach((tool, i) => {
-        const fp = FUNNEL_META[tool.funnelPosition] || { color: "#888", bg: "#f0f0f0", icon: "📌" };
-        const card = document.createElement("div");
-        card.className = "tool-card";
-        card.innerHTML = `
-          <div class="tool-top">
-            <div class="tool-row">
-              <div class="num">${i + 1}</div>
-              <div style="flex:1">
-                <div class="tool-name">${tool.name}</div>
-                <div class="tag-row">
-                  <span class="tag" style="background:${fp.bg};color:${fp.color}">${fp.icon} ${tool.funnelPosition}</span>
-                  <span class="tag" style="background:#f0f0f0;color:#666">${tool.toolTyp}</span>
-                </div>
-              </div>
-            </div>
-            <p class="tool-desc">${tool.beschreibung}</p>
-          </div>
-          <div class="was-box"><strong>↳</strong> ${tool.wasEsTut}</div>
-          <button class="prompt-toggle" onclick="togglePrompt(this)">
-            <span>▼</span> Fertigen Prompt anzeigen
-          </button>
-          <div class="prompt-box">
-            <div class="prompt-label">Diesen Prompt bei Claude eingeben:</div>
-            <div class="prompt-text">${tool.claudePrompt}</div>
-            <button class="btn-copy" onclick="copyPrompt(this, \`${(tool.claudePrompt||'').replace(/`/g,'\\`')}\`)">Prompt kopieren</button>
-          </div>
-        `;
-        container.appendChild(card);
-      });
-    }
-
-    function togglePrompt(btn) {
-      const box = btn.nextElementSibling;
-      const isOpen = box.classList.contains("open");
-      box.classList.toggle("open");
-      btn.innerHTML = isOpen ? "<span>▼</span> Fertigen Prompt anzeigen" : "<span>▲</span> Prompt schließen";
-    }
-
-    function copyPrompt(btn, text) {
-      navigator.clipboard.writeText(text);
-      btn.textContent = "✓ Kopiert!";
-      btn.classList.add("copied");
-      setTimeout(() => { btn.textContent = "Prompt kopieren"; btn.classList.remove("copied"); }, 2000);
-    }
-
-    function reset() {
-      document.getElementById("resultsSection").style.display = "none";
-      document.getElementById("inputSection").style.display  = "block";
-      document.getElementById("toolCards").innerHTML = "";
-    }
-
-    document.addEventListener("keydown", e => {
-      if (e.key === "Enter" && document.getElementById("inputSection").style.display !== "none") generate();
-    });
-  </script>
+document.addEventListener("keydown", function(e) {
+  if (e.key === "Enter" && document.getElementById("inputSection").style.display !== "none") generate();
+});
+</script>
 </body>
 </html>
