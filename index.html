@@ -211,28 +211,24 @@ function renderResults(nische, tools) {
         tx.textContent = "Laden...";
         cb.style.display = "none";
 
-        fetch("/.netlify/functions/prompt", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ tool: t, nische: currentNische, angebot: currentAngebot })
-        })
-        .then(function(res) { return res.json(); })
-        .then(function(data) {
-          tx.textContent = data.prompt || "Fehler.";
-          cb.style.display = "inline-block";
-          cb.onclick = function() {
-            navigator.clipboard.writeText(tx.textContent);
-            cb.textContent = "✓ Kopiert!";
-            cb.classList.add("copied");
-            setTimeout(function() { cb.textContent = "Prompt kopieren"; cb.classList.remove("copied"); }, 2000);
-          };
-          tog.innerHTML = "<span>&#9650;</span> Prompt schließen";
-        })
-        .catch(function() {
-          tx.textContent = "Fehler beim Laden.";
-          tog.innerHTML = "<span>&#10022;</span> Claude-Prompt generieren";
-        })
-        .finally(function() { tog.disabled = false; });
+        var prompt = "Erstelle ein interaktives React Artifact für die Nische: " + currentNische + ".\n\n" +
+          "Tool-Name: " + t.name + "\n" +
+          "Tool-Typ: " + t.toolTyp + "\n" +
+          "Logik: " + t.wasEsTut + "\n\n" +
+          "Baue eine saubere UI mit klar beschrifteten Eingabefeldern und einem strukturierten Ergebnis-Bereich. " +
+          "Die Zielgruppe sind " + currentNische + ". " +
+          "Das Tool soll sofort nutzbar sein und die Ergebnisse konkret und umsetzbar ausgeben. " +
+          "Kein Styling, keine Farben vorgeben – nur Funktion und Struktur.";
+        tx.textContent = prompt;
+        cb.style.display = "inline-block";
+        cb.onclick = function() {
+          navigator.clipboard.writeText(tx.textContent);
+          cb.textContent = "✓ Kopiert!";
+          cb.classList.add("copied");
+          setTimeout(function() { cb.textContent = "Prompt kopieren"; cb.classList.remove("copied"); }, 2000);
+        };
+        tog.innerHTML = "<span>&#9650;</span> Prompt schließen";
+        tog.disabled = false;
       };
     })(tool, toggle, box, txt, copyBtn);
 
