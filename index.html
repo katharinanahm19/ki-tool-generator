@@ -41,11 +41,12 @@
     .was-box { background: #fef4ee; border-top: 1px solid #e5cfd3; padding: 12px 24px; font-size: 13px; color: #1a4535; }
     .prompt-toggle { display: flex; align-items: center; gap: 8px; width: 100%; padding: 14px 24px; background: transparent; border: none; border-top: 1px solid #e5cfd3; cursor: pointer; font-size: 13px; font-weight: 700; color: #bd8892; font-family: 'Montserrat', sans-serif; text-align: left; transition: background 0.15s; }
     .prompt-toggle:hover { background: #fef4ee; }
+    .prompt-toggle:disabled { opacity: 0.6; cursor: not-allowed; }
     .prompt-box { background: #f8f4f0; border-top: 1px solid #e5cfd3; padding: 20px 24px; display: none; }
     .prompt-box.open { display: block; }
     .prompt-label { font-size: 11px; font-weight: 700; color: #bd8892; letter-spacing: 1.5px; text-transform: uppercase; margin-bottom: 10px; }
     .prompt-text { font-size: 13px; color: #333; line-height: 1.7; white-space: pre-wrap; font-family: 'Montserrat', sans-serif; margin-bottom: 14px; }
-    .btn-copy { padding: 9px 18px; background: #1a4535; color: #fff; border: none; border-radius: 8px; font-size: 13px; font-weight: 700; cursor: pointer; font-family: 'Montserrat', sans-serif; transition: background 0.2s; }
+    .btn-copy { padding: 9px 18px; background: #1a4535; color: #fff; border: none; border-radius: 8px; font-size: 13px; font-weight: 700; cursor: pointer; font-family: 'Montserrat', sans-serif; transition: background 0.2s; display: none; }
     .btn-copy:hover { background: #2d6b52; }
     .btn-copy.copied { background: #4e9c61; }
     .btn-reset { display: block; margin: 8px auto 0; padding: 12px 28px; background: transparent; color: #1a4535; border: 2px solid #1a4535; border-radius: 10px; font-size: 14px; font-weight: 700; cursor: pointer; font-family: 'Montserrat', sans-serif; transition: all 0.2s; }
@@ -55,9 +56,9 @@
 <body>
 
 <div class="hero">
-  <div class="badge">✦ KI-Tool-Generator</div>
+  <div class="badge">&#10022; KI-Tool-Generator</div>
   <h1>Welches Tool kannst du<br><span>für deine Kunden bauen?</span></h1>
-  <p>Gib deine Nische ein – erhalte 5 konkrete Tool-Ideen mit fertigem Claude-Prompt zum Bauen.</p>
+  <p>Gib deine Nische ein und erhalte 5 konkrete Tool-Ideen mit fertigem Claude-Prompt zum Bauen.</p>
 </div>
 
 <div class="card" id="inputSection">
@@ -66,7 +67,7 @@
   <label for="angebot">Dein Hauptangebot</label>
   <input type="text" id="angebot" placeholder="z.B. 12-Monats-Programm zum Launch-System aufbauen" />
   <div class="error-msg" id="errorMsg"></div>
-  <button class="btn-main" id="generateBtn" onclick="generate()">5 Tool-Ideen generieren &rarr;</button>
+  <button class="btn-main" onclick="generate()">5 Tool-Ideen generieren &rarr;</button>
 </div>
 
 <div class="loading" id="loadingSection">
@@ -76,7 +77,7 @@
 
 <div class="results" id="resultsSection">
   <div class="results-header">
-    <p>5 Tool-Ideen f&uuml;r</p>
+    <p>5 Tool-Ideen für</p>
     <h2 id="resultTitle"></h2>
   </div>
   <div id="toolCards"></div>
@@ -93,13 +94,17 @@ var FUNNEL_META = {
 };
 var LOAD_MSGS = ["Markttrends werden analysiert...", "Tool-Ideen werden entwickelt...", "Ergebnisse werden aufbereitet...", "Fast fertig..."];
 var loadInterval;
+var currentNische = "";
+var currentAngebot = "";
 
 function generate() {
   var nische  = document.getElementById("nische").value.trim();
   var angebot = document.getElementById("angebot").value.trim();
   var errorEl = document.getElementById("errorMsg");
-  if (!nische || !angebot) { errorEl.textContent = "Bitte beide Felder ausf\u00fcllen."; return; }
+  if (!nische || !angebot) { errorEl.textContent = "Bitte beide Felder ausfüllen."; return; }
   errorEl.textContent = "";
+  currentNische = nische;
+  currentAngebot = angebot;
 
   document.getElementById("inputSection").style.display   = "none";
   document.getElementById("loadingSection").style.display = "block";
@@ -118,12 +123,8 @@ function generate() {
   })
   .then(function(res) { return res.json(); })
   .then(function(data) {
-    if (data.error) {
-      throw new Error("API Fehler: " + JSON.stringify(data.error));
-    }
-    if (!data.content) {
-      throw new Error("Keine Antwort: " + JSON.stringify(data));
-    }
+    if (data.error) { throw new Error(data.error); }
+    if (!data.content) { throw new Error("Keine Antwort erhalten."); }
     var text  = data.content.map(function(i) { return i.text || ""; }).join("");
     var clean = text.replace(/```json|```/g, "").trim();
     var tools = JSON.parse(clean);
@@ -171,8 +172,7 @@ function renderResults(nische, tools) {
 
     var toggle = document.createElement("button");
     toggle.className = "prompt-toggle";
-    toggle.innerHTML = "<span>&#9660;</span> Fertigen Prompt anzeigen";
-    toggle.onclick = function() { togglePrompt(toggle, box); };
+    toggle.innerHTML = "<span>&#10022;</span> Claude-Prompt generieren";
 
     var box = document.createElement("div");
     box.className = "prompt-box";
@@ -183,33 +183,65 @@ function renderResults(nische, tools) {
 
     var txt = document.createElement("div");
     txt.className = "prompt-text";
-    txt.textContent = tool.claudePrompt || "";
+    txt.textContent = "";
 
     var copyBtn = document.createElement("button");
     copyBtn.className = "btn-copy";
     copyBtn.textContent = "Prompt kopieren";
-    copyBtn.onclick = function() {
-      navigator.clipboard.writeText(tool.claudePrompt || "");
-      copyBtn.textContent = "\u2713 Kopiert!";
-      copyBtn.classList.add("copied");
-      setTimeout(function() { copyBtn.textContent = "Prompt kopieren"; copyBtn.classList.remove("copied"); }, 2000);
-    };
 
     box.appendChild(lbl);
     box.appendChild(txt);
     box.appendChild(copyBtn);
+
+    (function(t, tog, b, tx, cb) {
+      tog.onclick = function() {
+        if (b.classList.contains("open") && tx.textContent) {
+          b.classList.remove("open");
+          tog.innerHTML = "<span>&#10022;</span> Claude-Prompt generieren";
+          return;
+        }
+        if (tx.textContent && !tx.textContent.startsWith("Laden")) {
+          b.classList.add("open");
+          tog.innerHTML = "<span>&#9650;</span> Prompt schließen";
+          return;
+        }
+        b.classList.add("open");
+        tog.disabled = true;
+        tog.innerHTML = "<span>&#9679;</span> Wird generiert...";
+        tx.textContent = "Laden...";
+        cb.style.display = "none";
+
+        fetch("/.netlify/functions/prompt", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ tool: t, nische: currentNische, angebot: currentAngebot })
+        })
+        .then(function(res) { return res.json(); })
+        .then(function(data) {
+          tx.textContent = data.prompt || "Fehler.";
+          cb.style.display = "inline-block";
+          cb.onclick = function() {
+            navigator.clipboard.writeText(tx.textContent);
+            cb.textContent = "✓ Kopiert!";
+            cb.classList.add("copied");
+            setTimeout(function() { cb.textContent = "Prompt kopieren"; cb.classList.remove("copied"); }, 2000);
+          };
+          tog.innerHTML = "<span>&#9650;</span> Prompt schließen";
+        })
+        .catch(function() {
+          tx.textContent = "Fehler beim Laden.";
+          tog.innerHTML = "<span>&#10022;</span> Claude-Prompt generieren";
+        })
+        .finally(function() { tog.disabled = false; });
+      };
+    })(tool, toggle, box, txt, copyBtn);
+
     card.appendChild(top);
     card.appendChild(was);
     card.appendChild(toggle);
     card.appendChild(box);
     container.appendChild(card);
   });
-}
-
-function togglePrompt(btn, box) {
-  var isOpen = box.classList.contains("open");
-  box.classList.toggle("open");
-  btn.innerHTML = isOpen ? "<span>&#9660;</span> Fertigen Prompt anzeigen" : "<span>&#9650;</span> Prompt schlie&szlig;en";
 }
 
 function esc(str) {
