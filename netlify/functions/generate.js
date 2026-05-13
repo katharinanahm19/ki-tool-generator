@@ -30,15 +30,14 @@ exports.handler = async (event) => {
       },
       body: JSON.stringify({
         model: "claude-haiku-4-5-20251001",
-        max_tokens: 1500,
-        system: "Tool-Strategin für Online-Unternehmerinnen. Erstelle 5 KI-Tool-Ideen. NUR JSON zurückgeben.",
-        messages: [{ role: "user", content: "Nische: " + nische + ". Angebot: " + angebot + ". Generiere 5 Tool-Ideen als JSON-Array. Felder: name, beschreibung (2 Saetze), toolTyp, funnelPosition (Lead-Magnet/Kurs-Bonus/Launch-Tool/Onboarding/Community-Tool), wasEsTut (Gibt ein: X - bekommt raus: Y), claudePrompt (beginnt mit: Erstelle ein interaktives React Artifact). Format: [{\"name\":\"\",\"beschreibung\":\"\",\"toolTyp\":\"\",\"funnelPosition\":\"\",\"wasEsTut\":\"\",\"claudePrompt\":\"\"}]" }],
+        max_tokens: 1200,
+        system: "Du bist Tool-Strategin. Antworte NUR mit JSON, kein Text davor oder danach.",
+        messages: [{ role: "user", content: "Erstelle 5 KI-Tool-Ideen fuer diese Nische: " + nische + ". Hauptangebot: " + angebot + ". Nur Claude Artifacts (Generator, Quiz, Rechner, Chatbot, Checkliste). Kein SaaS. JSON-Array mit Feldern: name (max 4 Woerter), beschreibung (1 Satz), toolTyp, funnelPosition (Lead-Magnet/Kurs-Bonus/Launch-Tool/Onboarding/Community-Tool), wasEsTut (Gibt ein: X - bekommt raus: Y). Format: [{\"name\":\"\",\"beschreibung\":\"\",\"toolTyp\":\"\",\"funnelPosition\":\"\",\"wasEsTut\":\"\"}]" }],
       }),
     });
 
     const data = await response.json();
 
-    // Pass full response back including any errors
     return {
       statusCode: 200,
       headers: { "Content-Type": "application/json", "Access-Control-Allow-Origin": "*" },
